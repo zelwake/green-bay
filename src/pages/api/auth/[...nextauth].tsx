@@ -20,7 +20,15 @@ export default NextAuth({
           throw new Error('invalid credentials')
         }
 
-        return { id: '1', username: 'test' }
+        // create and return the token
+        // const token = jwToken.sign(
+        //   { sub: '1', username: 'test' },
+        //   process.env.JWT_SECRET,
+        //   {
+        //     expiresIn: '30d',
+        //   }
+        // )
+        return { id: '1', name: 'test' }
       },
     }),
   ],
@@ -34,20 +42,14 @@ export default NextAuth({
   jwt: {
     secret: process.env.JWT_SECRET,
   },
-
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      console.log('user')
-      console.log(user)
-      console.log('account')
-      console.log(account)
-      console.log('credentials')
-      console.log(credentials)
-      // save the user account to the database
-      return true
-    },
-    async redirect({ url, baseUrl }) {
-      return baseUrl
+    async jwt({ token, account, profile, user, isNewUser }) {
+      if (user) {
+        token.name = user?.name
+        token.id = user?.id
+      }
+      console.log(token)
+      return token
     },
   },
   // Enable debug messages in the console if you are having problems

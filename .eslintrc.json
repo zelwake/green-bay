@@ -13,8 +13,7 @@
     "sourceType": "module"
   },
   "rules": {
-    "prefer-const": "error",
-    "@typescript-eslint/no-explicit-any": "error"
+    "prefer-const": "error"
   },
   "plugins": ["@typescript-eslint"]
 }
