@@ -14,7 +14,9 @@ export default NextAuth({
           username: string
           password: string
         }
-        if (username != 'test' && password != 'test') {
+
+        // validate user credentials
+        if (username != 'test' || password != 'test') {
           throw new Error('invalid credentials')
         }
 
@@ -26,7 +28,7 @@ export default NextAuth({
 
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
     updateAge: 24 * 60 * 60, // 24 hours
   },
   jwt: {
@@ -35,10 +37,11 @@ export default NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      console.log('user')
       console.log(user)
+      console.log('account')
       console.log(account)
-      console.log(profile)
-      console.log(email)
+      console.log('credentials')
       console.log(credentials)
       // save the user account to the database
       return true
