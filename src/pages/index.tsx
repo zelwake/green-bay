@@ -1,27 +1,15 @@
 import Login from '@/components/Login'
-import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 export default function Home() {
-  const [token, setToken] = useState('')
-
-  useEffect(() => {
-    const tokenFromLocalStorage = localStorage.getItem('token')
-    console.log(tokenFromLocalStorage)
-    setToken(tokenFromLocalStorage as string)
-  }, [])
-
+  const { data: token, status } = useSession()
+  // console.log(status)
   function testToken() {
-    fetch('/api/haveToken', {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    })
+    if (token) {
+      fetch('/api/haveToken')
+    }
   }
 
-  function handleTokenChange(newToken: string) {
-    setToken(newToken)
-    localStorage.setItem('token', newToken)
-  }
   return (
     <div className="p-8 h-screen bg-gray-300">
       <Login />

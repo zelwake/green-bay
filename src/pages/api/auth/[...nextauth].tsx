@@ -48,8 +48,21 @@ export default NextAuth({
         token.name = user?.name
         token.id = user?.id
       }
-      console.log(token)
+      // console.log(token)
       return token
+    },
+    async session({ session, token, user }) {
+      // console.log(session)
+      // console.log(token)
+      return session
+    },
+  },
+  events: {
+    session({ token, session }) {
+      // console.log('token')
+      // console.log(token)
+      // console.log('session')
+      // console.log(session)
     },
   },
   // Enable debug messages in the console if you are having problems
