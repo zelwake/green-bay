@@ -1,3 +1,5 @@
+import db from '@/lib/db'
+import validateCredentials from '@/scripts/validateCredentials'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
@@ -16,18 +18,15 @@ export default NextAuth({
         }
 
         // validate user credentials
-        if (username != 'test' || password != 'test') {
-          throw new Error('invalid credentials')
-        }
+        if (!validateCredentials(username, password)) return null
 
-        // create and return the token
-        // const token = jwToken.sign(
-        //   { sub: '1', username: 'test' },
-        //   process.env.JWT_SECRET,
-        //   {
-        //     expiresIn: '30d',
-        //   }
-        // )
+        // check database if user exists
+        db.query('SELECT * FROM users WHERE name = ?', username, (e, res) => {
+          if (e) {
+            return e
+          }
+          return res
+        })
         return { id: '1', name: 'test' }
       },
     }),

@@ -7,6 +7,11 @@ export default function Home() {
   function testToken() {
     if (token) {
       fetch('/api/haveToken')
+        .then((res) => {
+          console.log(res)
+          return res.json()
+        })
+        .then((data) => console.log(data))
     }
   }
 
