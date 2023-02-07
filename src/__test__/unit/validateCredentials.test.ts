@@ -30,8 +30,13 @@ describe('testing username and password input', () => {
     expect(validateCredentials('saveUser', '3nougH')).toBe(true)
   })
 
-  test('password should have at least one capital letter', async () => {
+  test('password should have at least one uppercase letter', async () => {
     expect(validateCredentials('saveUser', 'not3nough')).toBe(false)
     expect(validateCredentials('saveUser', 'IamWorkingWithNumb3r5')).toBe(true)
+  })
+
+  test('password should have at least one lowercase letter', async () => {
+    expect(validateCredentials('saveUser', 'NOT3ENOUGH')).toBe(false)
+    expect(validateCredentials('saveUser', 'BIGLETT3Rs')).toBe(true)
   })
 })
