@@ -21,7 +21,7 @@ describe('testing username and password input', () => {
   })
 
   test('password should be at least 6 characters long', async () => {
-    expect(validateCredentials('saveUser', 'short')).toBe(false)
+    expect(validateCredentials('saveUser', 'sh0rT')).toBe(false)
     expect(validateCredentials('saveUser', 'enOugh1')).toBe(true)
   })
 

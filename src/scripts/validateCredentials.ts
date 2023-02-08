@@ -1,14 +1,13 @@
 const validateCredentials = (username: string, password: string): boolean => {
-  if (username && password && username.length >= 8 && password.length >= 6) {
-    if (
-      /\d/.test(password) &&
-      /[A-Z]/.test(password) &&
-      /[a-z]/.test(password)
-    ) {
-      return true
-    }
+  if (!username || !password || username.length < 8 || password.length < 6) {
+    return false
   }
-  return false
+
+  const hasNumber = /\d/.test(password)
+  const hasUpperCase = /[A-Z]/.test(password)
+  const hasLowerCase = /[a-z]/.test(password)
+
+  return hasNumber && hasUpperCase && hasLowerCase
 }
 
 export default validateCredentials
