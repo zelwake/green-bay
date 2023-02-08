@@ -28,8 +28,22 @@ export default NextAuth({
           .then((data) => data)
           .catch((err) => console.log(err))
 
-        console.log(result)
-        return { id: '1', name: 'test' }
+        if (!result || !(result as []).length) {
+          const add = await dbQuery('INSERT INTO users SET ?', {
+            username,
+            password,
+            greenbay_dollars: 300,
+          })
+          return {
+            id: add.insertId,
+            name: username,
+          }
+        }
+
+        return {
+          id: result[0].id,
+          name: username,
+        }
       },
     }),
   ],
@@ -37,33 +51,17 @@ export default NextAuth({
 
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // 24 hours
   },
   jwt: {
     secret: process.env.JWT_SECRET,
   },
   callbacks: {
-    async jwt({ token, account, profile, user, isNewUser }) {
+    async jwt({ token, user }) {
       if (user) {
-        token.name = user?.name
-        token.id = user?.id
+        token.userName = user?.name
+        token.userId = user?.id
       }
-      // console.log(token)
       return token
-    },
-    async session({ session, token, user }) {
-      // console.log(session)
-      // console.log(token)
-      return session
-    },
-  },
-  events: {
-    session({ token, session }) {
-      // console.log('token')
-      // console.log(token)
-      // console.log('session')
-      // console.log(session)
     },
   },
   // Enable debug messages in the console if you are having problems

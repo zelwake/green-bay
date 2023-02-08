@@ -1,18 +1,15 @@
 import Login from '@/components/Login'
+import { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 
-export default function Home() {
-  const { data: session, status } = useSession()
-  console.log(session)
+const Home: NextPage = () => {
+  const { data: session } = useSession()
   function testToken() {
-    if (session) {
-      fetch('/api/haveToken')
-        .then((res) => {
-          console.log(res)
-          return res.json()
-        })
-        .then((data) => console.log(data))
-    }
+    // if (session) {
+    fetch('/api/haveToken')
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+    // }
   }
 
   return (
@@ -26,3 +23,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home

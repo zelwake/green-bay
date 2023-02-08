@@ -13,12 +13,18 @@ db.connect((err) => {
     : console.log('Connected to database')
 })
 
-async function databaseQuery(query: string, params: string[] | {}) {
+async function databaseQuery(
+  query: string,
+  params:
+    | string[]
+    | string
+    | { username: string; password: string; greenbay_dollars: number }
+): Promise<any> {
   return new Promise((resolve, reject) => {
     db.query(query, params, (err, result) => {
       err ? reject(err) : resolve(result)
     })
-  }).catch((err) => console.log(err))
+  })
 }
 
 export default databaseQuery

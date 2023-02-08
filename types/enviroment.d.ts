@@ -6,7 +6,6 @@ declare namespace NodeJS {
     readonly MYSQL_HOST: string
     readonly MYSQL_USER: string
     readonly MYSQL_PASSWORD: string
-    readonly MYSQL_DATABASE_URL: string
     readonly MYSQL_DATABASE: string
   }
 }
