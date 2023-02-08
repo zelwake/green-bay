@@ -1,4 +1,4 @@
-import dbQuery from '@/lib/db'
+import databaseQuery from '@/lib/db'
 import validateCredentials from '@/scripts/validateCredentials'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -21,7 +21,7 @@ export default NextAuth({
         if (!validateCredentials(username, password)) return null
 
         // check database if user exists
-        const result = await dbQuery(
+        const result = await databaseQuery(
           'SELECT * FROM users WHERE username = ?',
           username
         )
@@ -29,7 +29,7 @@ export default NextAuth({
           .catch((err) => console.log(err))
 
         if (!result || !(result as []).length) {
-          const add = await dbQuery('INSERT INTO users SET ?', {
+          const add = await databaseQuery('INSERT INTO users SET ?', {
             username,
             password,
             greenbay_dollars: 300,
@@ -57,11 +57,15 @@ export default NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.userName = user?.name
-        token.userId = user?.id
+      if (user && user.name) {
+        token.userName = user.name
+        token.userId = user.id
       }
       return token
+    },
+    async session({ token, session }) {
+      session.user.id = token.userId
+      return session
     },
   },
   // Enable debug messages in the console if you are having problems
