@@ -1,4 +1,4 @@
-import db from '@/lib/db'
+import dbQuery from '@/lib/db'
 import validateCredentials from '@/scripts/validateCredentials'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -11,7 +11,7 @@ export default NextAuth({
         username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      authorize(credentials, req) {
+      async authorize(credentials, req) {
         const { username, password } = credentials as {
           username: string
           password: string
@@ -21,12 +21,14 @@ export default NextAuth({
         if (!validateCredentials(username, password)) return null
 
         // check database if user exists
-        db.query('SELECT * FROM users WHERE name = ?', username, (e, res) => {
-          if (e) {
-            return e
-          }
-          return res
-        })
+        const result = await dbQuery(
+          'SELECT * FROM users WHERE username = ?',
+          username
+        )
+          .then((data) => data)
+          .catch((err) => console.log(err))
+
+        console.log(result)
         return { id: '1', name: 'test' }
       },
     }),

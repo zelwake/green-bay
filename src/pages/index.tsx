@@ -2,10 +2,10 @@ import Login from '@/components/Login'
 import { useSession } from 'next-auth/react'
 
 export default function Home() {
-  const { data: token, status } = useSession()
-  // console.log(status)
+  const { data: session, status } = useSession()
+  console.log(session)
   function testToken() {
-    if (token) {
+    if (session) {
       fetch('/api/haveToken')
         .then((res) => {
           console.log(res)
