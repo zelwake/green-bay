@@ -17,7 +17,6 @@ const PageLayout = ({ children }: { children: ReactElement }) => {
           return res.json()
         })
         .then((data) => {
-          console.log(data)
           setUser(data)
         })
         .catch((err) => console.log(err))
@@ -29,10 +28,10 @@ const PageLayout = ({ children }: { children: ReactElement }) => {
   }, [fetchUser])
 
   return (
-    <>
+    <div className="py-3 px-2 min-h-screen bg-gray-300">
       <Login user={user} session={session} />
       {children}
-    </>
+    </div>
   )
 }
 

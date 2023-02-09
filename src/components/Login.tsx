@@ -1,3 +1,4 @@
+import { Session } from 'next-auth'
 import { signIn, signOut } from 'next-auth/react'
 
 export default function Component({
@@ -5,12 +6,11 @@ export default function Component({
   session,
 }: {
   user: { name: string; credit: number } | null
-  session: any
+  session: Session | null
 }) {
-  // const { data: session } = useSession()
   if (session) {
     return (
-      <div className="flex gap-3">
+      <div className="flex pl-8 gap-8 text-xl font-bold text-green-800">
         <p>Signed in as {session.user?.name}</p>
         <p>Current balance is {user?.credit}</p>
         <button onClick={() => signOut()}>Sign out</button>
@@ -18,9 +18,8 @@ export default function Component({
     )
   }
   return (
-    <>
-      <p>Not signed in</p>
+    <div className="flex pl-8 gap-8 text-xl font-bold text-green-800">
       <button onClick={() => signIn()}>Sign in</button>
-    </>
+    </div>
   )
 }
