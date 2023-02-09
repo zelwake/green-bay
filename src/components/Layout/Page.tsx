@@ -13,7 +13,6 @@ const PageLayout = ({ children }: { children: ReactElement }) => {
     if (session && session.user) {
       fetch(`/api/users/${session.user.id}`)
         .then((res) => {
-          console.log(res)
           return res.json()
         })
         .then((data) => {

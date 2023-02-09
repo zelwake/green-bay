@@ -19,6 +19,13 @@ async function databaseQuery(
     | string[]
     | string
     | { username: string; password: string; greenbay_dollars: number }
+    | {
+        name: string
+        description: string
+        photo_url: string
+        price: number
+        seller: number
+      }
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     db.query(query, params, (err, result) => {
