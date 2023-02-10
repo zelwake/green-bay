@@ -28,7 +28,14 @@ export default NextAuth({
           .then((data) => data)
           .catch((err) => console.log(err))
 
-        if (!result || !(result as []).length) {
+        if ((result as []).length) {
+          return result[0].password === password
+            ? {
+                id: result[0].id,
+                name: username,
+              }
+            : null
+        } else {
           const add = await databaseQuery('INSERT INTO users SET ?', {
             username,
             password,
@@ -38,11 +45,6 @@ export default NextAuth({
             id: add.insertId,
             name: username,
           }
-        }
-
-        return {
-          id: result[0].id,
-          name: username,
         }
       },
     }),

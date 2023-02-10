@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 import { ReactElement, useCallback, useEffect, useState } from 'react'
 import Login from '../Login'
 
@@ -29,6 +30,9 @@ const PageLayout = ({ children }: { children: ReactElement }) => {
   return (
     <div className="py-3 px-2 min-h-screen bg-gray-300">
       <Login user={user} session={session} />
+      <Link href="/sell-item" className="pl-8 text-lg">
+        Sell
+      </Link>
       {children}
     </div>
   )

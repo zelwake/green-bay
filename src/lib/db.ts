@@ -18,6 +18,7 @@ async function databaseQuery(
   params:
     | string[]
     | string
+    | number
     | { username: string; password: string; greenbay_dollars: number }
     | {
         name: string
