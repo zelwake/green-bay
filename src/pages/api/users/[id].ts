@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const token = await checkToken({ req })
+  const token = await checkToken(req)
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized' })

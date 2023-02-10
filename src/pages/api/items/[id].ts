@@ -1,11 +1,11 @@
 import databaseQuery from '@/lib/db'
+import checkToken from '@/scripts/checkToken'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  //todo: GET to return single item information: name, description, photo url, price, sellers name and if bought also buyer's name
   const { id } = req.query
   if (req.method === 'GET') {
     try {
@@ -24,8 +24,49 @@ export default async function handler(
     }
   }
 
-  //todo: POST to buy an item
-  // only when logged user has enough green dollars
+  const token = await checkToken(req)
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+
+  if (req.method === 'POST') {
+    try {
+      const isSellable = (
+        await databaseQuery(
+          'SELECT sellable FROM items WHERE id = ?',
+          id as string
+        )
+      ).at(0).sellable
+
+      if (!isSellable) {
+        return res.status(400).json({ error: 'Item is not for sale' })
+      }
+
+      const buyerFunds = (
+        await databaseQuery(
+          'SELECT greenbay_dollars FROM users WHERE id = ?',
+          token.userId
+        )
+      ).at(0).greenbay_dollars
+
+      if (buyerFunds < req.body.price) {
+        return res.status(400).json({ error: 'Insufficient funds' })
+      }
+
+      await databaseQuery(
+        'UPDATE items SET sellable = ?, buyer = ? WHERE id = ?',
+        ['0', token.userId, id as string]
+      )
+      await databaseQuery(
+        'UPDATE users SET greenbay_dollars = ? WHERE id = ?',
+        [(buyerFunds - req.body.price).toString(), token.userId]
+      )
+      return res.status(200).json({ message: token.userName })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+  }
   // on successfully buying item, subtract amount from buyer's dollars, mark the item as sold and add buyer's name
   res.status(200).json({ name: 'John Doe' })
 }

@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   //todo: GET to return all sellable items with name, photo url and price OR nothing if such item doesn't exists
 
-  const token = await checkToken({ req })
+  const token = await checkToken(req)
   if (!token) return res.status(401).json({ error: 'Unauthorized' })
   //todo: POST to add new item
   if (req.method === 'POST') {

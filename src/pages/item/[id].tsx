@@ -2,7 +2,7 @@ import PageLayout from '@/components/Layout/Page'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-interface Item {
+interface ItemType {
   name: string
   description: string
   photo_url: string
@@ -12,21 +12,34 @@ interface Item {
 }
 
 const Item = () => {
-  //todo: show item with name, description, price, photo, who is seller and if bought, who was it
   const router = useRouter()
-  const [item, setItem] = useState<Item | null>(null)
+  const currentId: string = router.query.id as string
 
-  useEffect(() => {
-    fetch(`/api/items/${router.query.id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setItem(data.item)
-      })
-  }, [router.query.id])
+  const item = useLoadItem(currentId)
 
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const buyItem = (event: React.MouseEvent<HTMLLIElement>) => {
     event.preventDefault()
-    console.log('Bought!')
+    setErrorMessage('')
+    fetch(`/api/items/${currentId}`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const { error, message } = data
+        if (message) {
+          console.log('message: ' + message)
+          router.reload()
+        }
+        if (error) {
+          setErrorMessage(error)
+        }
+      })
+      .catch((err) => console.log(err))
   }
 
   if (item) {
@@ -35,15 +48,7 @@ const Item = () => {
         <ul className="pl-8 pt-2">
           <li>Name: {item.name}</li>
           <li>Description: {item.description}</li>
-          <li>
-            Image: {item.photo_url}
-            {/* <Image
-              src={item.photo_url}
-              alt="Item image"
-              width={20}
-              height={20}
-            /> */}
-          </li>
+          <li>Image: {item.photo_url}</li>
           <li>Price: {item.price}&nbsp;$G</li>
           <li>Seller: {item.seller}</li>
           {item.buyer ? (
@@ -53,12 +58,32 @@ const Item = () => {
               Buy item
             </li>
           )}
+          {errorMessage && <p>{errorMessage}</p>}
         </ul>
       </PageLayout>
     )
   }
 
-  return <p>No item</p>
+  return (
+    <PageLayout>
+      <p className="pl-8 pt-2">No item</p>
+    </PageLayout>
+  )
 }
 
 export default Item
+
+function useLoadItem(id: string): ItemType | null {
+  const [item, setItem] = useState<ItemType | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/items/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setItem(data.item)
+      })
+      .catch((err) => console.log(err))
+  }, [id])
+
+  return item
+}
