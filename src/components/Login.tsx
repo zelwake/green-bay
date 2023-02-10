@@ -12,7 +12,7 @@ export default function Component({
     return (
       <div className="flex pl-8 gap-8 text-xl font-bold text-green-800">
         <p>Signed in as {session.user?.name}</p>
-        <p>Current balance is {user?.credit}</p>
+        <p>Current balance is {user?.credit}&nbsp;$G</p>
         <button onClick={() => signOut()}>Sign out</button>
       </div>
     )

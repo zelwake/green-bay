@@ -29,8 +29,11 @@ const PageLayout = ({ children }: { children: ReactElement }) => {
 
   return (
     <div className="py-3 px-2 min-h-screen bg-gray-300">
+      <Link href="/" className="mx-8 text-2xl font-bold uppercase">
+        home
+      </Link>
       <Login user={user} session={session} />
-      <Link href="/sell-item" className="pl-8 text-lg">
+      <Link href="/sell-item" className="ml-8 text-lg">
         Sell
       </Link>
       {children}

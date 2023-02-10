@@ -45,7 +45,7 @@ const Item = () => {
   if (item) {
     return (
       <PageLayout>
-        <ul className="pl-8 pt-2">
+        <ul className="ml-8 pt-2">
           <li>Name: {item.name}</li>
           <li>Description: {item.description}</li>
           <li>Image: {item.photo_url}</li>
@@ -66,7 +66,7 @@ const Item = () => {
 
   return (
     <PageLayout>
-      <p className="pl-8 pt-2">No item</p>
+      <p className="ml-8 pt-2">No item</p>
     </PageLayout>
   )
 }
