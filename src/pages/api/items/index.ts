@@ -6,11 +6,23 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  //todo: GET to return all sellable items with name, photo url and price OR nothing if such item doesn't exists
-
   const token = await checkToken(req)
   if (!token) return res.status(401).json({ error: 'Unauthorized' })
-  //todo: POST to add new item
+  //todo: GET to return all sellable items with name, photo url and price OR nothing if such item doesn't exists
+  if (req.method === 'GET') {
+    try {
+      const items = await databaseQuery(
+        'SELECT id, name, photo_url, price FROM items WHERE sellable = 1',
+        ''
+      )
+
+      return res.status(200).json({ items })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+  }
+
   if (req.method === 'POST') {
     const { name, description, photoUrl, price } = req.body
     // needs name, description, photo url and price
@@ -28,14 +40,12 @@ export default async function handler(
       price: parseInt(price),
       seller: parseInt(token.userId),
     })
-      .then((insert) => {
-        console.log(insert)
-        res.status(201).json({ item: insert.insertId })
-      })
+      .then((insert) => res.status(201).json({ item: insert.insertId }))
       .catch((err) => {
         console.log(err)
         res.status(500).json({ error: 'Internal server error' })
       })
+    return
   }
-  // res.status(200).json({ name: 'John Doe' })
+  res.status(405).json({ error: 'Method not allowed' })
 }

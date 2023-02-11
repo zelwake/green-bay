@@ -32,7 +32,6 @@ const Item = () => {
       .then((data) => {
         const { error, message } = data
         if (message) {
-          console.log('message: ' + message)
           router.reload()
         }
         if (error) {

@@ -25,22 +25,22 @@ export default async function handler(
   }
 
   const token = await checkToken(req)
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+  if (!token) return res.status(401).json({ error: 'Unauthorized' })
 
   if (req.method === 'POST') {
     try {
-      const isSellable = (
-        await databaseQuery(
-          'SELECT sellable FROM items WHERE id = ?',
-          id as string
-        )
-      ).at(0).sellable
+      const findItem = await databaseQuery(
+        'SELECT sellable FROM items WHERE id = ?',
+        id as string
+      )
 
-      if (!isSellable) {
+      if (!findItem.length)
+        return res.status(400).json({ error: 'Item not found' })
+
+      const isSellable = findItem.at(0).sellable
+
+      if (!isSellable)
         return res.status(400).json({ error: 'Item is not for sale' })
-      }
 
       const buyerFunds = (
         await databaseQuery(
@@ -49,9 +49,8 @@ export default async function handler(
         )
       ).at(0).greenbay_dollars
 
-      if (buyerFunds < req.body.price) {
+      if (buyerFunds < req.body.price)
         return res.status(400).json({ error: 'Insufficient funds' })
-      }
 
       await databaseQuery(
         'UPDATE items SET sellable = ?, buyer = ? WHERE id = ?',
@@ -61,12 +60,11 @@ export default async function handler(
         'UPDATE users SET greenbay_dollars = ? WHERE id = ?',
         [(buyerFunds - req.body.price).toString(), token.userId]
       )
-      return res.status(200).json({ message: token.userName })
+      return res.status(200).json({ message: 'Success' })
     } catch (error) {
       console.log(error)
       return res.status(500).json({ error: 'Internal server error' })
     }
   }
-  // on successfully buying item, subtract amount from buyer's dollars, mark the item as sold and add buyer's name
-  res.status(200).json({ name: 'John Doe' })
+  res.status(405).json({ error: 'Method not allowed' })
 }
