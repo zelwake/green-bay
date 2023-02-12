@@ -1,23 +1,14 @@
 import PageLayout from '@/components/Layout/Page'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-
-interface ItemType {
-  name: string
-  description: string
-  photo_url: string
-  price: number
-  seller: string
-  buyer: string | null
-}
+import { SingleItem } from 'types/interfaces'
 
 const Item = () => {
   const router = useRouter()
   const currentId: string = router.query.id as string
-
   const item = useLoadItem(currentId)
-
   const [errorMessage, setErrorMessage] = useState<string>('')
+
   const buyItem = (event: React.MouseEvent<HTMLLIElement>) => {
     event.preventDefault()
     setErrorMessage('')
@@ -72,8 +63,8 @@ const Item = () => {
 
 export default Item
 
-function useLoadItem(id: string): ItemType | null {
-  const [item, setItem] = useState<ItemType | null>(null)
+export function useLoadItem(id: string): SingleItem | null {
+  const [item, setItem] = useState<SingleItem | null>(null)
 
   useEffect(() => {
     fetch(`/api/items/${id}`)

@@ -38,7 +38,6 @@ const CreateItem = () => {
   }
   return (
     <PageLayout>
-      {/* //todo: create form that takes the name, description, photo url and price for the item */}
       <form onSubmit={addItem}>
         <label className="p-1">
           Name:

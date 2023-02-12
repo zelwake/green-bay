@@ -2,21 +2,9 @@ import PageLayout from '@/components/Layout/Page'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-
-interface ItemList {
-  id: number
-  name: string
-  photo_url: string
-  price: number
-}
+import { ItemList } from 'types/interfaces'
 
 const Home: NextPage = () => {
-  function testToken() {
-    fetch('/api/haveToken')
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-  }
-
   const items = useFetchItems()
 
   return (
@@ -37,7 +25,6 @@ const Home: NextPage = () => {
             </div>
           ))}
         </div>
-        <button onClick={testToken}>Test Token</button>
       </div>
     </PageLayout>
   )
@@ -45,7 +32,7 @@ const Home: NextPage = () => {
 
 export default Home
 
-const useFetchItems = () => {
+export const useFetchItems = (): ItemList[] => {
   const [itemList, setItemList] = useState<ItemList[]>([])
 
   useEffect(() => {
