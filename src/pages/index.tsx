@@ -1,10 +1,8 @@
 import PageLayout from '@/components/Layout/Page'
-import { NextPage } from 'next'
+import { useFetchItems } from '@/scripts/hooks/useFetchItems'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { ItemList } from 'types/interfaces'
 
-const Home: NextPage = () => {
+const Home = () => {
   const items = useFetchItems()
 
   return (
@@ -31,16 +29,3 @@ const Home: NextPage = () => {
 }
 
 export default Home
-
-export const useFetchItems = (): ItemList[] => {
-  const [itemList, setItemList] = useState<ItemList[]>([])
-
-  useEffect(() => {
-    fetch(`/api/items`)
-      .then((res) => res.json())
-      .then((data) => setItemList(data.items))
-      .catch((err) => console.log(err))
-  }, [])
-
-  return itemList
-}
