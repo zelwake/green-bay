@@ -46,9 +46,8 @@ describe('/api/items/index GET API endpoint', () => {
     await handler(req, res)
 
     expect(res.statusCode).toEqual(401)
+    expect(res._getJSONData()).toEqual({ error: 'Unauthorized' })
   })
-
-  jest.mock('@/scripts/checkToken', () => jest.fn(() => true))
 
   it('should return 200 status code', async () => {
     ;(checkToken as jest.Mock).mockImplementation(() => true)
@@ -122,29 +121,28 @@ describe('/api/items/index POST API endpoint', () => {
     })
   })
 
-  it('should return 400 status code, error positive integer', async () => {
-    ;(checkToken as jest.Mock).mockImplementation(() => true)
-    ;(databaseQuery as jest.Mock).mockImplementation(() => ({ insertId: 1 }))
-    const { req, res } = mockRequestResponse()
-    const numbers = ['0', '-1', '1.1'] //todo: throwing error
-    // for (const number of numbers) {
-    req.body = {
-      name: 'Test',
-      description: 'Test of api',
-      photoUrl: 'http://image.png',
-      price: '1.1',
-      // price: number,
-    }
-    console.log(req.body)
-    await handler(req, res)
+  const numbers = ['0', '-1', '1.1'] //todo: throwing error
+  for (const number of numbers) {
+    it('should return 400 status code, error positive integer', async () => {
+      ;(checkToken as jest.Mock).mockImplementation(() => true)
+      ;(databaseQuery as jest.Mock).mockImplementation(() => ({ insertId: 1 }))
+      const { req, res } = mockRequestResponse()
+      req.body = {
+        name: 'Test',
+        description: 'Test of api',
+        photoUrl: 'http://image.png',
+        price: number,
+      }
+      console.log(req.body)
+      await handler(req, res)
 
-    expect(res.statusCode).toEqual(400)
-    expect(res.getHeaders()).toEqual({ 'content-type': 'application/json' })
-    expect(res._getJSONData()).toEqual({
-      error: 'Price must be positive integer',
+      expect(res.statusCode).toEqual(400)
+      expect(res.getHeaders()).toEqual({ 'content-type': 'application/json' })
+      expect(res._getJSONData()).toEqual({
+        error: 'Price must be positive integer',
+      })
     })
-    // }
-  })
+  }
 
   it('should return 400 status code, error wrong url', async () => {
     ;(checkToken as jest.Mock).mockImplementation(() => true)
