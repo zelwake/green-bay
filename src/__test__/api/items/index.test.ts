@@ -121,7 +121,7 @@ describe('/api/items/index POST API endpoint', () => {
     })
   })
 
-  const numbers = ['0', '-1', '1.1'] //todo: throwing error
+  const numbers = ['0', '-1', '1.1']
   for (const number of numbers) {
     it('should return 400 status code, error positive integer', async () => {
       ;(checkToken as jest.Mock).mockImplementation(() => true)
@@ -133,7 +133,6 @@ describe('/api/items/index POST API endpoint', () => {
         photoUrl: 'http://image.png',
         price: number,
       }
-      console.log(req.body)
       await handler(req, res)
 
       expect(res.statusCode).toEqual(400)
@@ -189,7 +188,7 @@ describe('/api/items/index PUT API endpoint', () => {
     return { req, res }
   }
 
-  it('should return 405 when not calling GET or POST', async () => {
+  it('should return 405 when calling PUT', async () => {
     ;(checkToken as jest.Mock).mockImplementation(() => true)
     const { req, res } = mockRequestResponse()
     await handler(req, res)

@@ -6,7 +6,10 @@ export const useFetchItems = (): ItemList[] => {
 
   useEffect(() => {
     fetch(`/api/items`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) throw new Error('Unauthorized')
+        return res.json()
+      })
       .then((data) => setItemList(data.items))
       .catch((err) => console.log(err))
   }, [])
