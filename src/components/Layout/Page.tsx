@@ -33,9 +33,11 @@ const PageLayout = ({ children }: { children: ReactElement }) => {
         home
       </Link>
       <Login user={user} session={session} />
-      <Link href="/sell-item" className="ml-8 text-lg">
-        Sell
-      </Link>
+      {session && (
+        <Link href="/sell-item" className="ml-8 text-lg">
+          Sell
+        </Link>
+      )}
       {children}
     </div>
   )
