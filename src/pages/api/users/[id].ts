@@ -16,7 +16,7 @@ export default async function handler(
   switch (req.method) {
     case 'GET':
       const user = await databaseQuery(
-        'SELECT username, greenbay_dollars FROM users WHERE id = ?',
+        'SELECT username, greenbay_dollars FROM Users WHERE id = ?',
         userId
       )
       if (!user.length) {

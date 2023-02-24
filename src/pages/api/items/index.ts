@@ -12,7 +12,7 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const items = await databaseQuery(
-        'SELECT id, name, photo_url, price FROM items WHERE sellable = 1',
+        'SELECT id, name, photo_url, price FROM Items WHERE sellable = 1',
         ''
       )
 
@@ -36,7 +36,7 @@ export default async function handler(
       return res.status(400).json({ error: 'Url must be valid' })
 
     try {
-      const insert = await databaseQuery('INSERT INTO items SET ?', {
+      const insert = await databaseQuery('INSERT INTO Items SET ?', {
         name,
         description,
         photo_url: photoUrl,

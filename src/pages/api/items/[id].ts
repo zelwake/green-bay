@@ -11,10 +11,10 @@ export default async function handler(
     try {
       const response = await databaseQuery(
         `SELECT name, description, photo_url, price, sell.username as seller, buy.username as buyer 
-        FROM items 
-        JOIN users AS sell ON seller = sell.id 
-        LEFT JOIN users AS buy ON buyer = buy.id 
-        WHERE items.id = ?`,
+        FROM Items 
+        JOIN Users AS sell ON seller = sell.id 
+        LEFT JOIN Users AS buy ON buyer = buy.id 
+        WHERE Items.id = ?`,
         id as string
       )
       return res.status(200).json({ item: response.at(0) })
@@ -30,7 +30,7 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const findItem = await databaseQuery(
-        'SELECT sellable FROM items WHERE id = ?',
+        'SELECT sellable FROM Items WHERE id = ?',
         id as string
       )
 
@@ -44,7 +44,7 @@ export default async function handler(
 
       const buyerFunds = (
         await databaseQuery(
-          'SELECT greenbay_dollars FROM users WHERE id = ?',
+          'SELECT greenbay_dollars FROM Users WHERE id = ?',
           token.userId
         )
       ).at(0).greenbay_dollars
@@ -53,11 +53,11 @@ export default async function handler(
         return res.status(400).json({ error: 'Insufficient funds' })
 
       await databaseQuery(
-        'UPDATE items SET sellable = ?, buyer = ? WHERE id = ?',
+        'UPDATE Items SET sellable = ?, buyer = ? WHERE id = ?',
         ['0', token.userId, id as string]
       )
       await databaseQuery(
-        'UPDATE users SET greenbay_dollars = ? WHERE id = ?',
+        'UPDATE Users SET greenbay_dollars = ? WHERE id = ?',
         [(buyerFunds - req.body.price).toString(), token.userId]
       )
       return res.status(200).json({ message: 'Success' })

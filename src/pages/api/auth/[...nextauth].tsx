@@ -22,7 +22,7 @@ export default NextAuth({
 
         // check database if user exists
         const result = await databaseQuery(
-          'SELECT * FROM users WHERE username = ?',
+          'SELECT * FROM Users WHERE username = ?',
           username
         )
           .then((data) => data)
@@ -36,14 +36,19 @@ export default NextAuth({
               }
             : null
         } else {
-          const add = await databaseQuery('INSERT INTO users SET ?', {
-            username,
-            password,
-            greenbay_dollars: 300,
-          })
-          return {
-            id: add.insertId,
-            name: username,
+          try {
+            const add = await databaseQuery('INSERT INTO Users SET ?', {
+              username,
+              password,
+              greenbay_dollars: 300,
+            })
+            return {
+              id: add.insertId,
+              name: username,
+            }
+          } catch (error) {
+            console.log(error)
+            return null
           }
         }
       },
